@@ -13,9 +13,6 @@ function App() {
         <Route path="/">
           <Layout />
         </Route>
-        <Route path="/dashboard">
-          <Dashboard />
-        </Route>
       </Switch>
   );
 }
