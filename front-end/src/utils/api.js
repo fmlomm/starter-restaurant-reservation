@@ -67,3 +67,15 @@ export async function listReservations(params, signal) {
     .then(formatReservationDate)
     .then(formatReservationTime);
 }
+
+// listAll for reservations
+// createReservation
+// listTables for available tables
+// createTable
+// seatReservation for table
+// completeReservation
+// updateReservation
+// updateReservationStatus
+// getReservationById
+
+
