@@ -1,8 +1,8 @@
-import React from "react";
-
+import React, { useState, useEffect } from "react";
 import { Redirect, Route, Switch, useRouteMatch } from "react-router-dom";
 import Dashboard from "../dashboard/Dashboard";
 import NotFound from "./NotFound";
+import useQuery from "../utils/useQuery"
 import { today } from "../utils/date-time";
 
 /**

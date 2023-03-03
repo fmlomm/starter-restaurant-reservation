@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 function ReservationDetail({ reservation }) {
     const [ currentReservation, setCurrentReservation ] = useState(reservation);
-    console.log(currentReservation)
+    console.log(currentReservation);
 
     return (
     <>
