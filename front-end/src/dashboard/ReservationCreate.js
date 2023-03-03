@@ -118,6 +118,21 @@ function ReservationCreate() {
                         />
                     <small className="form-text text-muted">Enter Reservation Date</small>
                     </div>
+                    <div className="col-4 form-group">
+                        <label>
+                            Reservation Time
+                        </label>
+                        <input
+                            className="form-control"
+                            id="reservation_time"
+                            name="reservation_time"
+                            type="datetime-local"
+                            onChange={handleChange}
+                            required={true}
+                            value={reservation.reservation_time}
+                            />
+                        <small className="form-text text-muted">Enter Reservation Time</small>
+                    </div>
                 </div>
             </form>
         </main>
