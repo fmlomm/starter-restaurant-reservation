@@ -134,7 +134,11 @@ function ReservationCreate() {
                         <small className="form-text text-muted">Enter Reservation Time</small>
                     </div>
                 </div>
+                <button type="button" onClick={() => history.goBack()} className="btn btn-secondary mr-2"> Cancel </button>
+                <button type="submit" className="btn btn=primary"> Submit Reservation </button>
             </form>
         </main>
     )
 }
+
+export default ReservationCreate;
