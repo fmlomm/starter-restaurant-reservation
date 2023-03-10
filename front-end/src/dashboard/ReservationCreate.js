@@ -77,9 +77,9 @@ function ReservationCreate() {
                         </label>
                         <input
                             className="form-control"
-                            id="mobile_phone"
-                            name="mobile_phone"
-                            type="text"
+                            id="mobile_number"
+                            name="mobile_number"
+                            type="number"
                             onChange={handleChange}
                             required={true}
                             value={reservation.mobile_number}
@@ -126,7 +126,7 @@ function ReservationCreate() {
                             className="form-control"
                             id="reservation_time"
                             name="reservation_time"
-                            type="datetime-local"
+                            type="time"
                             onChange={handleChange}
                             required={true}
                             value={reservation.reservation_time}
@@ -138,7 +138,7 @@ function ReservationCreate() {
                 <button type="submit" className="btn btn=primary"> Submit Reservation </button>
             </form>
         </main>
-    )
+    );
 }
 
 export default ReservationCreate;

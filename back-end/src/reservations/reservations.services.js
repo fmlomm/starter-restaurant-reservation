@@ -8,7 +8,9 @@ function list() {
 
 function listByDate(reservation_date) {
     return knex('reservations')
-    .select('*');
+    .select('*')
+    .where({ reservation_date })
+    .orderBy('reservation_time');
 }
 
 function listByMobileNumber(mobile_number) {

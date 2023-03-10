@@ -7,7 +7,7 @@ function ReservationDetail({ reservation }) {
     return (
     <>
        <tr key={currentReservation.reservation_id}>
-        <th scope="row"> {reservation.reservation.id} </th>
+        <th scope="row"> {reservation.reservation_id} </th>
         <td> {currentReservation.first_name} </td>
         <td> {currentReservation.last_name} </td>
         <td> {currentReservation.people} </td>
