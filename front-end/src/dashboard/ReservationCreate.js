@@ -18,6 +18,9 @@ function ReservationCreate() {
     })
 
     const handleChange = ({ target }) => {
+        if (target.name === reservation.mobile_number) {
+            target.name = target.value.replace("-", " ")
+        }
         setReservation({
             ...reservation,
             [target.name]: target.value,
@@ -26,8 +29,10 @@ function ReservationCreate() {
 
     async function handleSubmit(event) {
         event.preventDefault();
+        console.log("creating reservation");
         createReservation(reservation)
             .then(() => {
+                console.log("cough")
                 history.push(`/dashboard?date=${reservation.reservation_date}`);
             })
             .catch(setError);
@@ -79,9 +84,10 @@ function ReservationCreate() {
                             className="form-control"
                             id="mobile_number"
                             name="mobile_number"
-                            type="number"
+                            type="text"
                             onChange={handleChange}
                             required={true}
+                            placeholder="(xxx) xxx-xxxx"
                             value={reservation.mobile_number}
                             />
                         <small className="form-text text-muted">Enter Mobile Number</small>
@@ -95,6 +101,7 @@ function ReservationCreate() {
                             id="people"
                             name="people"
                             type="number"
+                            pattern="[0-9]"
                             onChange={handleChange}
                             required={true}
                             value={reservation.people}

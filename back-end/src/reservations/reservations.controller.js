@@ -109,7 +109,7 @@ function validTime(req, res, next) {
 
 function hasValidPeople(req, res, next) {
   const people = req.body.data.people;
-  const valid = Number.isInteger(people);
+  const valid = Number.isInteger(parseInt(people));
   
   if (people > 0 && valid) {
     return next();
@@ -147,6 +147,7 @@ function read(req, res) {
 
 async function create(req, res) {
   const newReservation = req.body.data;
+  console.log("creating reservation" + JSON.stringify(newReservation));
   const data = await service.create(newReservation);
   res.status(201).json({ data });
 }
