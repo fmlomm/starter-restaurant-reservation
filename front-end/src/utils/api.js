@@ -71,6 +71,7 @@ export async function listReservations(params, signal) {
 export async function createReservation(reservation, signal) {
   const url = `${API_BASE_URL}/reservations/new`;
   console.log("api call");
+  reservation.people = parseInt(reservation.people);
   const options = {
     method: 'POST',
     headers,

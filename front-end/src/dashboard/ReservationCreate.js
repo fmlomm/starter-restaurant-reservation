@@ -14,13 +14,10 @@ function ReservationCreate() {
         mobile_number: "",
         reservation_date: "",
         reservation_time: "",
-        people: 1,
+        people: 0,
     })
 
     const handleChange = ({ target }) => {
-        if (target.name === reservation.mobile_number) {
-            target.name = target.value.replace("-", " ")
-        }
         setReservation({
             ...reservation,
             [target.name]: target.value,
@@ -29,10 +26,8 @@ function ReservationCreate() {
 
     async function handleSubmit(event) {
         event.preventDefault();
-        console.log("creating reservation");
         createReservation(reservation)
             .then(() => {
-                console.log("cough")
                 history.push(`/dashboard?date=${reservation.reservation_date}`);
             })
             .catch(setError);
