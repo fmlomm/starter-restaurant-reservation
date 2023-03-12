@@ -109,7 +109,7 @@ function validTime(req, res, next) {
 
 function hasValidPeople(req, res, next) {
   const people = req.body.data.people;
-  const valid = Number.isInteger(parseInt(people));
+  const valid = Number.isInteger(people);
   
   if (people > 0 && valid) {
     return next();
