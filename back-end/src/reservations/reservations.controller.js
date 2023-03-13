@@ -75,7 +75,6 @@ function hasReservationDate(req, res, next) {
 function validDate(req, res, next) {
   const date = req.body.data.reservation_date;
   const valid = Date.parse(date);
-  console.log(date);
 
   if (valid) {
     return next();
@@ -125,7 +124,7 @@ function validTime(req, res, next) {
 function noPastReservations(req, res, next) {
   const { reservation_date, reservation_time } = req.body.data;
   const now = Date.now();
-  const proposedReservation = new Date(`${reservation_date} ${reservation_time}.valueOf()`);
+  const proposedReservation = new Date(`${reservation_date} ${reservation_time}`).valueOf();
   if (proposedReservation > now) {
     return next();
   }
