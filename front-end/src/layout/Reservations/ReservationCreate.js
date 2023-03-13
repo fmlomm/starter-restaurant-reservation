@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router";
-import { createReservation } from "../utils/api";
-import ErrorAlert from "../layout/ErrorAlert";
+import { createReservation } from "../../utils/api";
+import ErrorAlert from "../ErrorAlert";
 
 function ReservationCreate() {
 
@@ -26,7 +26,10 @@ function ReservationCreate() {
 
     async function handleSubmit(event) {
         event.preventDefault();
-        createReservation(reservation)
+        createReservation({
+            ...reservation,
+            "status": "Booked",
+        })
             .then(() => {
                 history.push(`/dashboard?date=${reservation.reservation_date}`);
             })

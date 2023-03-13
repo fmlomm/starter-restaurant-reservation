@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 function ReservationDetail({ reservation }) {
     const [ currentReservation, setCurrentReservation ] = useState(reservation);
     
+    useEffect(() => {
+        setCurrentReservation(reservation);
+    }, [reservation])
 
     return (
     <>
@@ -14,6 +17,14 @@ function ReservationDetail({ reservation }) {
         <td> {currentReservation.mobile_number} </td>
         <td> {currentReservation.reservation_date} </td>
         <td> {currentReservation.reservation_time} </td>
+        <td>
+        <a 
+            to={`/reservations/${currentReservation.reservation_id}/seat`}
+            href={`/reservations/${currentReservation.reservation_id}/seat`}
+          >
+            <button className="btn btn-primary "> Seat </button>
+          </a>
+        </td>
         <td> 
             <button className="btn btn-primary"> Edit </button>
         </td>

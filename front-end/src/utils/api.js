@@ -81,6 +81,53 @@ export async function createReservation(reservation, signal) {
   return await fetchJson(url, options);
 }
 
+export async function createTable(table, signal) {
+  const url = `${API_BASE_URL}/tables/new`;
+  const options = {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({ data: table }),
+    signal,
+  };
+  return await fetchJson(url, options);
+}
+
+/**
+ * 
+ * @param {*} signal 
+ * @returns {Promise<[table]>}
+ *  a promise that resolves to a possibly empty array of tables saved in the database
+ */
+
+
+export async function listTables(signal) {
+  const url = new URL(`${API_BASE_URL}/tables`);
+  return await fetchJson(url, { headers, signal }, [])
+}
+
+/**
+ * 
+ * @param table_id
+ * the id of the table
+ * @param reservation_id
+ * the id of the reservation to be updated
+ * @param signal
+ * AbortController.signal 
+ * @returns {Promise<[table]>}
+ *  a promise that resolves to a possibly empty array of tables saved in the database
+ */
+
+export async function updateSeat(table_id, reservation_id, signal) {
+  const url =`${API_BASE_URL}/tables/${table_id}/seat`;
+  const options = {
+    method: "PUT",
+    headers,
+    body: JSON.stringify({ data: { reservation_id }}),
+    signal,
+  };
+  return await fetchJson(url, options);
+}
+
 
 
 
