@@ -97,6 +97,19 @@ function noTuesday(req, res, next) {
     })
 }
 
+function noPastReservations(req, res, next) {
+  const { reservation_date, reservation_time } = req.body.data;
+  const now = Date.now();
+  const proposedReservation = new Date(`${reservation_date} ${reservation_time}`).valueOf();
+  if (proposedReservation > now) {
+    return next();
+  }
+  next({
+    status: 400,
+    message: "Reservation must be in the future."
+  })
+}
+
 function hasReservationTime(req, res, next) {
   const time = req.body.data.reservation_time;
   if (time && typeof time === 'string') {
@@ -121,18 +134,19 @@ function validTime(req, res, next) {
   })
 }
 
-function noPastReservations(req, res, next) {
-  const { reservation_date, reservation_time } = req.body.data;
-  const now = Date.now();
-  const proposedReservation = new Date(`${reservation_date} ${reservation_time}`).valueOf();
-  if (proposedReservation > now) {
+function reservationDuringHours(req, res, next) {
+  const time = req.body.data.reservation_time;
+  const open = "10:30";
+  const closed = "21:30";
+  if (time >= open && time <= closed) {
     return next();
   }
   next({
     status: 400,
-    message: "Reservation must be in the future."
+    message: "Reservation must be between 10:30AM and 9:30PM",
   })
 }
+
 
 function hasValidPeople(req, res, next) {
   const people = req.body.data.people;
@@ -192,6 +206,7 @@ module.exports = {
     noPastReservations,
     hasReservationTime,
     validTime,
+    reservationDuringHours,
     hasValidPeople, 
     asyncErrorBoundary(create)
   ],
