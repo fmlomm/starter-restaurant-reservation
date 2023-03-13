@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { listReservations } from "../utils/api";
+import { listReservations, listTables } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 import { previous, next } from "../utils/date-time";
 import { useLocation, useHistory, useRouteMatch } from "react-router-dom";
 import ReservationDetail from "./ReservationDetail";
+import TableDetail from "./TableDetail";
 
 /**
  * Defines the dashboard page.
@@ -16,12 +17,23 @@ function Dashboard({ date }) {
   const [currentDate, setCurrentDate] = useState(date);
   const [reservationsError, setReservationsError] = useState(null);
 
+  const [tables, setTables] = useState([]);
+  const [tablesError, setTablesError] = useState(null);
+
   const url = useRouteMatch();
   const history = useHistory();
   const location = useLocation();
   const searchedDate = location.search.slice(-10);
 
   
+
+  function loadTables() {
+    const abortController = new AbortController();
+    setTablesError(null);
+    listTables(abortController.signal)
+      .then(setTables)
+      .catch(setTablesError);
+  }
 
   function loadDashboard() {
     const abortController = new AbortController();
@@ -43,7 +55,9 @@ function Dashboard({ date }) {
   }
 
   useEffect(loadDashboard, [date, currentDate, location.search, searchedDate, url]);
+  useEffect(loadTables, [date, currentDate]);
   console.log(reservations);
+  console.log('tables', tables);
 
   const previousHandler = (event) => {
     event.preventDefault();
@@ -108,6 +122,27 @@ function Dashboard({ date }) {
          </table>
         </div>
         {/* {JSON.stringify(reservations)} */}
+
+        <ErrorAlert error={tablesError} />
+        <div>
+          <h4> Tables List </h4>
+          <table className="table table-striped">
+            <thead>
+              <tr>
+                <th scope="col"> ID </th>
+                <th scope="col"> Table Name </th>
+                <th scope="col"> Capacity </th>
+                <th scope="col"> Reservation ID </th>
+                <th scope="col"> Free / Occupied </th>
+               </tr>
+             </thead>
+            <tbody>
+              {tables && tables.map((table) => (
+                <TableDetail table={table} />
+              ))}
+            </tbody>
+         </table>
+        </div>
       </main>
     )
   } else {
