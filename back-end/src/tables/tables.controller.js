@@ -84,7 +84,7 @@ async function tableExists(req, res, next) {
   }
   next({
     status: 404,
-    message: "99",
+    message: "table_id does not exist",
   })
 }
 

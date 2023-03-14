@@ -34,7 +34,7 @@ describe("US-05 - Finish an occupied table", () => {
         .set("Accept", "application/json")
         .send({ datum: {} });
 
-      expect(response.body.error).toContain("99");
+      expect(response.body.error).toContain("table_id does not exist");
       expect(response.status).toBe(404);
     });
 
