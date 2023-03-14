@@ -97,21 +97,10 @@ function noTuesday(req, res, next) {
     })
 }
 
-function noPastReservations(req, res, next) {
-  const { reservation_date, reservation_time } = req.body.data;
-  const now = Date.now();
-  const proposedReservation = new Date(`${reservation_date} ${reservation_time}`).valueOf();
-  if (proposedReservation > now) {
-    return next();
-  }
-  next({
-    status: 400,
-    message: "Reservation must be in the future."
-  })
-}
 
 function hasReservationTime(req, res, next) {
   const time = req.body.data.reservation_time;
+
   if (time && typeof time === 'string') {
     return next();
   }
@@ -131,6 +120,19 @@ function validTime(req, res, next) {
   next({
     status: 400,
     message: "reservation_time must be valid time",
+  })
+}
+
+function noPastReservations(req, res, next) {
+  const { reservation_date, reservation_time } = req.body.data;
+  const now = Date.now();
+  const proposedReservation = new Date(`${reservation_date} ${reservation_time}`).valueOf();
+  if (proposedReservation > now) {
+    return next();
+  }
+  next({
+    status: 400,
+    message: "reservation_time"
   })
 }
 
