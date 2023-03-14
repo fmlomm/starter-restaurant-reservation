@@ -1,67 +1,53 @@
 import React, { useState, useEffect } from "react";
 import { useHistory, useParams } from "react-router";
-import { listReservations, listTables, seatReservation, updateSeat } from "../../utils/api";
+import { listTables, updateSeat } from "../../utils/api";
 import ErrorAlert from "../ErrorAlert";
 
 function ReservationSeat() {
   const history = useHistory();
   const {reservation_id} = useParams();
 
-  const [reservationsError, setReservationsError] = useState(null);
-  const [reservations, setReservations] = useState([]);
-
+  
   const [tables, setTables] = useState([]);
-  const [tablesError, setTablesError] = useState(null);
-  
+
   const [tableFormData, setTableFormData] = useState({});
-  const [seatError, setSeatError] = useState(null);
+  const [error, setError] = useState(null);
 
-  function loadReservations() {
+  
+  useEffect(() => {
     const abortController = new AbortController();
-    setReservationsError(null);
-    return listReservations(abortController.signal)
-      .then(setReservations)
-      .catch(setReservationsError)
-  }
-
-  function loadTables() {
-    const abortController = new AbortController();
-    setTablesError(null);
-    return listTables(abortController.signal)
+    setError(null);
+    listTables()
       .then(setTables)
-      .catch(setTablesError);
-  }
+      .catch(setError);
 
-  useEffect(loadTables, []);
-  useEffect(loadReservations, []);
-  
-  console.log(reservations);
-  
+    return () => abortController.abort();
+  }, []);
 
   const handleSubmit = (event) => {
     event.preventDefault();
     const tableObj = JSON.parse(tableFormData);
-    seatReservation(reservation_id)
     updateSeat(tableObj.table_id, reservation_id)
     .then((response) => {
       const newTables = tables.map((table) => {
         return table.table_id === response.table_id ? response : table
       })
-      setTables(newTables);
+      setTables(newTables)
       history.push('/dashboard')
     })
-    .catch(setSeatError);
+    
+    .catch(setError);
     }
 
   if (tables) {
     return (
-      <main> 
+      <> 
         <div className="mb-3">
           <h1> Seat The Current Reservation </h1>
         </div>
-        <ErrorAlert error={reservationsError} />
-        <ErrorAlert error={tablesError} />
-        <ErrorAlert error={seatError} />
+        
+        <ErrorAlert error={error} />
+
         <div className="mb-3">
           <h3> Current Reservation: {reservation_id} </h3>
         </div>
@@ -90,7 +76,7 @@ function ReservationSeat() {
           <button type="button" onClick={() => history.goBack()} className="btn btn-secondary mr-2"> Cancel </button>
           <button className="btn btn-primary" type="submit"> Submit </button>
         </form>
-      </main>
+      </>
     );
   } else {
     return (

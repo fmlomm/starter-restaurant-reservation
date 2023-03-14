@@ -1,37 +1,38 @@
-import React, { useEffect, useState } from "react";
-import { deleteTableReservation, finishReservation } from "../../utils/api";
+import React, { useState } from "react";
+import { deleteTableReservation, listTables, updateResStatus } from "../../utils/api";
 import { useHistory } from "react-router-dom";
 import ErrorAlert from "../ErrorAlert";
 
-function TableDetail({ table, reservations }) {
+function TableDetail({ table }) {
   const [currentTable, setCurrentTable] = useState(table);
-  const [tableStatus, setTableStatus] = useState("free");
   const history = useHistory();
   const [error, setError] = useState(null);
 
-  // useEffect for table status: free or occupied
-  
-  useEffect(() => {
-    if (currentTable.reservation_id !== null) {
-      setTableStatus(`occupied`)
-    } else {
-      setTableStatus("free")
+  async function clearAndLoadTables() {
+    const abortController = new AbortController();
+    try {
+      const response = await deleteTableReservation(currentTable.table_id, abortController.signal);
+      const tableToSet = response.find((table) => table.table_id === currentTable.table_id);
+      setCurrentTable({...tableToSet})
+      listTables()
+      return tableToSet;
+    } catch (error) {
+      setError(error);
     }
-  }, [currentTable, reservations])
+  }
 
-  const handleClear = (event) => {
+  async function handleClear(event) {
+    const abortController = new AbortController();
     event.preventDefault();
     setError(null);
     if (window.confirm("Is this table ready to seat new guests? This cannot be undone.")) {
-      finishReservation(currentTable.reservation_id)
-      deleteTableReservation(currentTable.table_id)
-      .then((response) => {
-        setCurrentTable(response[0])
-        setTableStatus("free");
-      })
-      .then(() => history.push("/tables"))
-      .catch(setError);
+      await updateResStatus({ status: "finished"}, currentTable.reservation_id, abortController.signal);
+      const newTable = await clearAndLoadTables();
+      console.log(newTable);
+      history.push("/tables");
+      return;
     }
+     
   }
 
   return (
@@ -42,10 +43,16 @@ function TableDetail({ table, reservations }) {
         <td> {currentTable.table_name} </td>
         <td> {currentTable.capacity} </td>
         <td> {currentTable.reservation_id} </td>
-        <td data-table-id-status={`${currentTable.table_id}`}> {tableStatus} </td>
-        <td data-table-id-finish={currentTable.table_id}>
-          {tableStatus.includes('occupied') ?
-          <button className="btn btn-danger" onClick={handleClear}> Finish </button>
+        <td data-table-id-status={`${table.table_id}`}> {currentTable.table_status} </td>
+        <td >
+          {currentTable.reservation_id ?
+          <button
+          className="btn btn-danger"
+          onClick={handleClear}
+          data-table-id-finish={`${table.table_id}`}
+          > 
+          Finish 
+          </button>
           : 
           <></>
           }

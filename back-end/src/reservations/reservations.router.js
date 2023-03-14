@@ -1,8 +1,3 @@
-/**
- * Defines the router for reservation resources.
- *
- * @type {Router}
- */
 
 const router = require("express").Router();
 const controller = require("./reservations.controller");
@@ -22,9 +17,10 @@ router
 router
   .route("/:reservationId([0-9]+)")
   .get(controller.read)
+  .put(controller.updateReservation)
   .all(methodNotAllowed);
 
-  router
+router
   .route("/:reservationId([0-9]+)/status")
   .put(controller.updateStatus)
   .all(methodNotAllowed);

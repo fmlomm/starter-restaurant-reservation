@@ -3,14 +3,13 @@ import { listReservations, listTables } from "../utils/api";
 import { previous, next } from "../utils/date-time";
 import ErrorAlert from "../layout/ErrorAlert";
 import { useLocation, useHistory } from "react-router-dom";
-import ReservationDetail from "../layout/Reservations/ReservationDetail";
-import TableDetail from "../layout/Tables/TableDetail";
+import ReservationDetail from "../layout/reservations/ReservationDetail";
+import TableDetail from "../layout/tables/TableDetail";
+
 
 function Dashboard({ date }) {
-
   const [reservations, setReservations] = useState([]);
   const [currentDate, setCurrentDate] = useState(date);
-  const [reservationsError, setReservationsError] = useState(null);
 
   const [tables, setTables] = useState([]);
   const [error, setError] = useState(null);
@@ -36,35 +35,45 @@ function Dashboard({ date }) {
 
   useEffect(() => {
     const abortController = new AbortController();
-    setError(null);
-    if (currentDate === date) {
-      listReservations({ date }, abortController.signal)
-      .then(setReservations)
-      .catch(setError);
-    } else {
-      listReservations({ currentDate }, abortController.signal)
-      .catch(setError);
+
+    async function loadReservations() {
+      try {
+        if (currentDate === date) {
+          const returnedReservations = await listReservations({ date }, abortController.signal);
+          setReservations(returnedReservations);
+        } else {
+          const returnedReservations = await listReservations({ currentDate }, abortController.signal);
+          setReservations(returnedReservations);
+        }
+      } catch (error) {
+        setError(error);
+      }
     }
-    
+    loadReservations();
     return () => abortController.abort();
-  },[]);
+  }, [date, currentDate, history.location])
 
   useEffect(() => {
     const abortController = new AbortController();
-    setError(null);
-    listTables()
-      .then(setTables)
-      .catch(setError);
 
+    async function loadTables() {
+      try {
+        const returnedTables = await listTables();
+        setTables(returnedTables);
+      } catch (error) {
+        setError(error);
+      }
+    }
+    loadTables();
     return () => abortController.abort();
-  }, []);
-
+  }, [history, date, currentDate])
 
   useEffect(() => {
-    if (searchedDate && searchedDate !== "") {
-      setCurrentDate(searchedDate)
+    if (searchedDate && searchedDate !== '') {
+      setCurrentDate(searchedDate);
     }
-  }, [searchedDate])
+  }, [searchedDate, history]);
+
 // change day handlers
 
   const previousHandler = (event) => {
@@ -84,11 +93,6 @@ function Dashboard({ date }) {
     history.push('/dashboard');
     setCurrentDate(next(currentDate));
   }
-
-
-
-  // console.log('TABLES', tables);
-  // console.log('CLEAR TABLES', clearTableToggler);
   
   if (reservations) {
     return (
@@ -124,22 +128,22 @@ function Dashboard({ date }) {
                 <th scope="col"> Last Name </th>
                 <th scope="col"> Party Size </th>
                 <th scope="col"> Phone Number </th>
-                <th scope="col"> Reservation Date </th>
-                <th scope="col"> Reservation Time </th>
-                <th scope="col"> Reservation Status </th>
-                <th scope="col"> Seat Reservation </th>
-                <th scope="col"> Edit Reservation </th>
+                <th scope="col"> Date </th>
+                <th scope="col"> Time </th>
+                <th scope="col"> Status </th>
+                <th scope="col"> Seat </th>
+                <th scope="col"> Edit </th>
+                <th scope="col"> Cancel </th>
                </tr>
              </thead>
             <tbody>
-              {reservations && reservations.map((res) => (
-                <ReservationDetail reservation={res} key={res.reservation_id}/>
+              {reservations.map((res) => (
+                <ReservationDetail res={res} key={res.reservation_id} />
               ))}
             </tbody>
          </table>
         </div>
 
-        <ErrorAlert error={error} />
         <div>
           <h4> Tables List </h4>
           <table className="table table-striped">
@@ -153,12 +157,12 @@ function Dashboard({ date }) {
                 {clearTableToggler.length ? 
                   <th scope="col"> Clear Tables </th>
                   : 
-                  <div></div>}
+                  <></>}
                </tr>
              </thead>
             <tbody>
-              {tables && tables.map((table) => (
-                <TableDetail table={table} reservations={reservations} key={table.table_id}/>
+              {tables.map((table) => (
+                <TableDetail table={table} key={table.table_id} />
               ))}
             </tbody>
          </table>
