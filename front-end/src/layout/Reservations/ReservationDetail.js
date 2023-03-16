@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { updateResStatus, listTables } from "../../utils/api";
 import ErrorAlert from "../ErrorAlert";
-
+import { Link } from "react-router-dom";
 
 
 
@@ -52,9 +52,9 @@ function ReservationDetail({ res }) {
         </td>
         <td>
           {reservation.status === 'booked' ?
-          <a href={`/reservations/${reservation.reservation_id}/edit`}>
+          <Link to={`/reservations/${reservation.reservation_id}/edit`}>
             <button className="btn btn-primary "> Edit </button>
-          </a>
+          </Link>
           :
           <></>
           }
