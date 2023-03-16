@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { listReservations } from "../utils/api";
+import ErrorAlert from "./ErrorAlert";
 
 import ReservationDetail from "./Reservations/ReservationDetail";
 
@@ -8,7 +9,7 @@ function ReservationSearch() {
   const [mobile_number, setMobile_number] = useState('');
   const [reservations, setReservations] = useState(null);
   const history = useHistory();
-  const [error, setError] = useState('No reservations found');
+  const [error, setError] = useState('');
 
   const handleSubmit = (event) => {
       event.preventDefault();
@@ -64,7 +65,7 @@ function ReservationSearch() {
       </div>
       :
       <>
-        <p className="alert alert-danger"> {error} </p>
+        <ErrorAlert error={error} />
       </>
       }
     </>

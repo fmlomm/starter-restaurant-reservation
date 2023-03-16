@@ -84,7 +84,7 @@ function ReservationCreate({ date }) {
               className="form-control"
               id="mobile_number"
               name="mobile_number"
-              type="text"
+              type="number"
               onChange={handleChange}
               required={true}
               placeholder="(xxx) xxx-xxxx"
