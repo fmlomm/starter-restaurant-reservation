@@ -42,10 +42,10 @@ function ReservationDetail({ res }) {
         <td data-reservation-id-status={reservation.reservation_id}> {reservation.status} </td>
         <td>
           {reservation.status === 'booked' ? 
-          <a            
-            href={`/reservations/${reservation.reservation_id}/seat`}>
+          <Link             
+            to={`/reservations/${reservation.reservation_id}/seat`}>
             <button className="btn btn-primary"> Seat </button>
-          </a> 
+          </Link> 
           :
           <div></div>
           }
