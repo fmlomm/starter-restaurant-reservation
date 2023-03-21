@@ -1,24 +1,22 @@
 import React, { useState } from "react";
-import { useHistory } from "react-router";
 import { createReservation } from "../../utils/api";
+import { useHistory } from "react-router";
 import ErrorAlert from "../ErrorAlert";
-import ReservationForm from "./ReservationForm";
+import ReservationForm from "../Reservations/ReservationForm";
 
-function ReservationCreate({ date }) {
-
-  const history = useHistory();
-  const [error, setError] = useState(null);
-
+function ReservationCreate() {
   const [reservation, setReservation] = useState({
     first_name: "",
     last_name: "",
     mobile_number: "",
-    reservation_date: date,
+    reservation_date: "",
     reservation_time: "",
-    people: "1",
-  })
+    people: 1,
+  });
 
-  // TODO Create Change Handler √
+  const [error, setError] = useState(null);
+  const history = useHistory();
+  
   const handleChange = ({ target }) => {
     setReservation({
       ...reservation,
@@ -26,7 +24,6 @@ function ReservationCreate({ date }) {
     });
   }
 
-  // TODO Create Submit Handler √
   function handleSubmit(event) {
     event.preventDefault();
     createReservation({
@@ -37,22 +34,21 @@ function ReservationCreate({ date }) {
         history.push(`/dashboard?date=${reservation.reservation_date}`);
       })
       .catch(setError);
-  }
+  } 
 
-  function createForm() {
-    return (
-      <div className="reservationForm=form">
-        <ErrorAlert error={error} />
-        <h4>Create</h4>
-        <ReservationForm
-          handleChange={handleChange}
-          handleSubmit={handleSubmit}
-          history={history}
-          />
-      </div>
-    )
-  }
-
+  return (
+    <div className="new-reservation">
+      <ErrorAlert error={error} />
+      <h4>New Reservation</h4>
+      <ReservationForm
+        handleSubmit={handleSubmit}
+        handleChange={handleChange}
+        history={history}
+        reservation={reservation}
+      />
+    </div>
+  );
 }
+
 
 export default ReservationCreate;

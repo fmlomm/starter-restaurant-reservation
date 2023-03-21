@@ -1,15 +1,16 @@
-import React, { useEffect, useState } from "react";
-import { useHistory, useParams } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useHistory, useParams } from "react-router";
 import { getReservation, updateReservation } from "../../utils/api";
 import ErrorAlert from "../ErrorAlert";
 import ReservationForm from "./ReservationForm";
 
-function ReservationEdit({ date }) {
+function ReservationEdit() {
   const { reservation_id } = useParams();
-  const [currentReservation, setCurrentReservation] = useState({reservation_id});
-  const [error, setError] = useState(null);
   const history = useHistory();
-  
+  const [error, setError] = useState(null);
+  const [currentReservation, setCurrentReservation] = useState({ reservation_id });
+
+
   useEffect(() => {
     getReservation(reservation_id)
     .then((response) => {
@@ -21,15 +22,15 @@ function ReservationEdit({ date }) {
     .catch(setError);
   }, [reservation_id]);
 
-  
-  
+
+
   const handleChange = ({ target }) => {
     setCurrentReservation({
       ...currentReservation,
       [target.name]: target.value,
     })
   }
-  
+
   const handleSubmit = (event) => {
     event.preventDefault();
     updateReservation({
@@ -40,27 +41,22 @@ function ReservationEdit({ date }) {
       setCurrentReservation({...response})
       history.push(`/dashboard?date=${currentReservation.reservation_date}`)
     })
-    
+
     .catch(setError)
   }
-
- function editForm() {
-  return (
+   return (
     <div className="reservationForm-form">
       <ErrorAlert error={error} />
       <h4> Edit </h4>
       <ReservationForm
-        handleChange={handleChange}
         handleSubmit={handleSubmit}
+        handleChange={handleChange}
         history={history}
+        reservation={currentReservation}
         />
     </div>
-  )
- }
- return (
-  <div>{Object.keys(ReservationForm).length ? editForm() : "Loading..."}</div>
- )
+    )
+  }
 
-}
 
 export default ReservationEdit;
